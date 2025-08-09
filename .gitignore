@@ -1,6 +1,30 @@
+# Environment variables
 .env
-__pychache__
-.vscode
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# VSCode
+.vscode/
+
+# Temporary / build files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Project-specific
 *.pptx
 *.pdf
 *mock.py
