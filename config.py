@@ -5,8 +5,8 @@ class PitchPilotConfig:
     
     def __init__(self):
         # LLM settings
-        self.deepseek_api_key = os.getenv("DEEPSEEK_API_KEY")
-        self.deepseek_model = "deepseek-r1-plus"
+        self.api_key = os.getenv("HF_TOKEN")
+        self.model = "meta-llama/Llama-3.3-70B-Instruct"
         
         # LangChain settings
         self.temperature = 0.2

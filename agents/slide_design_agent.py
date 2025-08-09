@@ -77,10 +77,9 @@ class SlideDesignAgent:
         content = pitch_content.get(section, [])
         
         return "\n".join(content)
-    
+
     def _parse_slide_design(self, design_text: str, slide_type: str) -> Dict[str, Any]:
         """Parse slide design from text into structured data."""
-        # This is a simplified implementation
         lines = design_text.split("\n")
         
         slide = {

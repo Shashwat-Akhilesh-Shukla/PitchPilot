@@ -39,4 +39,6 @@ Organize your content into the following sections:
 11. Ask
 
 Each section should be concise, impactful, and data-driven where possible.
+Each section must consist of exactly 3 bullet points, each under 10 words.
+No paragraphs. No filler. Only data-driven bullets.
 """

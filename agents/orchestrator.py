@@ -1,8 +1,7 @@
 ﻿from typing import Dict, List, Any
 import json
 from langchain.callbacks.base import BaseCallbackHandler
-from langchain.llms import DeepSeek
-
+from custom_llm import GroqHuggingFaceLLM
 from agents.research_agent import ResearchAgent
 from agents.pitch_creation_agent import PitchCreationAgent
 from agents.competitor_analysis_agent import CompetitorAnalysisAgent
@@ -20,14 +19,14 @@ class PitchPilotOrchestrator:
         self.callbacks = callbacks or []
         
         # Initialize the LLM
-        self.llm = DeepSeek(
-            api_key=config.deepseek_api_key,
-            model_name=config.deepseek_model,
+        self.llm = GroqHuggingFaceLLM(
+            model=config.model,
+            provider="groq",
+            api_key=config.api_key,
             temperature=config.temperature,
             max_tokens=config.max_tokens,
-            callbacks=self.callbacks
         )
-        
+
         # Initialize memory
         self.memory = QdrantMemoryStore(
             url=config.qdrant_url,

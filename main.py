@@ -1,7 +1,7 @@
 ﻿import os
 from dotenv import load_dotenv
 from langchain.callbacks import StdOutCallbackHandler
-
+from utils.presentation_exporter import save_as_powerpoint
 from agents.orchestrator import PitchPilotOrchestrator
 from config import PitchPilotConfig
 
@@ -41,6 +41,9 @@ def main():
     
     # Example of accessing specific slides
     print(f"Generated {len(pitch_deck['slides'])} slides")
+
+    output_filename = f"{startup_info['name'].replace(' ', '_')}_Pitch_Deck.pptx"
+    save_as_powerpoint(pitch_deck, output_filename, industry="Default")
     
 if __name__ == "__main__":
     main()

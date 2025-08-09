@@ -10,11 +10,11 @@ Slide Type: {slide_type}
 Relevant Content:
 {relevant_content}
 
-Design a compelling slide for the {slide_type} section of the pitch deck. Include:
-1. A catchy title for the slide
-2. Key points to include on the slide (bullet points preferred)
-3. Visual elements to include (charts, graphics, illustrations)
-4. Layout suggestions
-
+You are a specialized slide-design agent. For the {slide_type} slide:
+1. Give me a one-line, high-impact title.
+2. Provide exactly 3 bullet points, each no more than 8 words.
+3. List 2 visual elements (icons, charts) only.
+4. Suggest a simple layout (e.g., title at top, bullets left).
+Be ruthless: no extra sentences or fluff.
 Focus on clarity, impact, and visual appeal. The slide should communicate key information at a glance.
 """
