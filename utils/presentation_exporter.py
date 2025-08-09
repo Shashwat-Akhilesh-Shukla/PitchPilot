@@ -115,15 +115,19 @@ def save_as_powerpoint(pitch_deck: dict,
                 p.text = bullet
                 p.level = 0
 
-        # Image generation for key slides
-        if slide_data.get("type") in IMPORTANT_SLIDE_TYPES:
-            prompt = f"{slide_data.get('title')} for a {industry} startup pitch deck"
-            print(f"Generating image for slide '{slide_data['title']}' using Perplexity: {prompt}")
-            image_url = generate_image_via_perplexity(prompt)
-            if image_url:
-                image_path = download_image(image_url, filename=f"slide_{i}.jpg")
-                if image_path:
-                    add_image_to_slide(slide, image_path)
+        # # Image generation for key slides
+        # if slide_data.get("type") in IMPORTANT_SLIDE_TYPES:
+        #     prompt = f"{slide_data.get('title')} for a {industry} startup pitch deck"
+        #     print(f"Generating image for slide '{slide_data['title']}' using Perplexity: {prompt}")
+        #     image_url = generate_image_via_perplexity(prompt)
+        #     if image_url:
+        #         image_path = download_image(image_url, filename=f"slide_{i}.jpg")
+        #         if image_path:
+        #             add_image_to_slide(slide, image_path)
+        # Add generated visuals directly into slide
+        if slide_data.get("generated_visuals"):
+            for img_path in slide_data["generated_visuals"]:
+                add_image_to_slide(slide, img_path)
 
         # Notes with visuals (optional)
         visuals = slide_data.get("visual_elements", [])

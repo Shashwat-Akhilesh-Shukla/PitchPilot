@@ -6,6 +6,7 @@ from agents.research_agent import ResearchAgent
 from agents.pitch_creation_agent import PitchCreationAgent
 from agents.competitor_analysis_agent import CompetitorAnalysisAgent
 from agents.slide_design_agent import SlideDesignAgent
+from agents.visual_generation_agent import VisualGenerationAgent
 from memory.qdrant_memory import QdrantMemoryStore
 from utils.reflection_loops import ReflectionSystem
 from utils.memory_pruning import prune_memory
@@ -40,7 +41,7 @@ class PitchPilotOrchestrator:
         self.pitch_creation_agent = PitchCreationAgent(self.llm, self.memory)
         self.competitor_analysis_agent = CompetitorAnalysisAgent(self.llm, self.memory)
         self.slide_design_agent = SlideDesignAgent(self.llm, self.memory)
-        
+        self.visual_generation_agent = VisualGenerationAgent(self.llm)
         # Initialize reflection system
         self.reflection_system = ReflectionSystem(
             llm=self.llm,
@@ -82,6 +83,14 @@ class PitchPilotOrchestrator:
             pitch_content,
             self.config.default_slides
         )
+
+        for idx, slide in enumerate(slides):
+            generated_visuals = []
+            for vis_desc in slide.get("visual_elements", []):
+                img_path = self.visual_generation_agent.generate_visual_from_description(vis_desc, idx)
+                if img_path:
+                    generated_visuals.append(img_path)
+            slide["generated_visuals"] = generated_visuals
         
         # Compile the final pitch deck
         pitch_deck = {
