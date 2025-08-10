@@ -169,9 +169,7 @@ A: Yes! Prompt templates (in `/prompts/`) and slide lists (`config.py`) are full
 
 ## License
 
-**Proprietary / Internal**  
-(Contact authors for licensing and collaboration.)
-
+**MIT LICENSE**  
 ***
 
 ## Acknowledgments
