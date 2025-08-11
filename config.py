@@ -16,7 +16,7 @@ class PitchPilotConfig:
         self.qdrant_url = os.getenv("QDRANT_URL", "http://localhost:6333")
         self.qdrant_api_key = os.getenv("QDRANT_API_KEY")
         self.collection_name = "pitchpilot_memory"
-        self.vector_dimension = 1536
+        self.vector_dimension = 384
         
         # Agent settings
         self.max_iterations = 5

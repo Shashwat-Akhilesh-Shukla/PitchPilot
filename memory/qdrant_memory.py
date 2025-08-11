@@ -15,8 +15,8 @@ class QdrantMemoryStore:
         self,
         url: str,
         api_key: Optional[str] = None,
-        collection_name: str = "pitchpilot_memory",
-        vector_dimension: int = 384 ,  # Updated to match embedding model output
+        collection_name: str = "pitchpilot",
+        vector_dimension: int = 384 ,
         model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
     ):
         self.client = QdrantClient(url=url, api_key=api_key)

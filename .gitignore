@@ -1,3 +1,6 @@
+#virtual environment
+pitchpilot/
+
 # Environment variables
 .env
 
