@@ -1,6 +1,7 @@
 import os, httpx, requests, random, difflib
 from pptx import Presentation
 from pptx.util import Inches
+import time
 
 TEMPLATE_DIR = "templates"
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")

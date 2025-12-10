@@ -12,11 +12,12 @@ class PitchPilotConfig:
         self.temperature = 0.2
         self.max_tokens = 2048
         
-        # Qdrant settings
-        self.qdrant_url = os.getenv("QDRANT_URL", "http://localhost:6333")
-        self.qdrant_api_key = os.getenv("QDRANT_API_KEY")
-        self.collection_name = "pitchpilot_memory"
+        # Pinecone settings
+        self.pinecone_api_key = os.getenv("PINECONE_API_KEY")
+        self.index_name = "pitchpilot_memory"
         self.vector_dimension = 384
+        self.pinecone_cloud = "aws"
+        self.pinecone_region = "us-east-1"
         
         # Agent settings
         self.max_iterations = 5

@@ -1,13 +1,13 @@
 ﻿from typing import Dict, List, Any
-from langchain.llms.base import BaseLLM
+from langchain_core.language_models import BaseChatModel
 
-from memory.qdrant_memory import QdrantMemoryStore
+from memory.memory import PineconeMemoryStore
 from prompts.competitor_analysis_prompts import COMPETITOR_ANALYSIS_PROMPT_TEMPLATE
 
 class CompetitorAnalysisAgent:
     """Agent responsible for analyzing competitors."""
     
-    def __init__(self, llm: BaseLLM, memory: QdrantMemoryStore):
+    def __init__(self, llm: BaseChatModel, memory: PineconeMemoryStore):
         self.llm = llm
         self.memory = memory
     
@@ -16,17 +16,7 @@ class CompetitorAnalysisAgent:
         startup_info: Dict[str, str], 
         research_results: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """
-        Analyze competitors based on startup information and research results.
-        
-        Args:
-            startup_info: Dictionary containing information about the startup
-            research_results: Dictionary containing research results
-            
-        Returns:
-            Dictionary containing competitor analysis
-        """
-        # Create a prompt for competitor analysis
+
         prompt = COMPETITOR_ANALYSIS_PROMPT_TEMPLATE.format(
             startup_name=startup_info["name"],
             industry=startup_info["industry"],
@@ -35,14 +25,15 @@ class CompetitorAnalysisAgent:
             market_trends=research_results["market_trends"]
         )
         
-        # Get competitor analysis from LLM
-        analysis_response = self.llm.generate([prompt])
-        analysis_text = analysis_response.generations[0][0].text
+        # Modern LangChain call
+        analysis_text = self.llm.invoke(prompt)
         
-        # Parse the analysis response into structured data
+        # If your model returns ChatMessage objects, extract the content
+        if hasattr(analysis_text, "content"):
+            analysis_text = analysis_text.content
+        
         competitor_analysis = self._parse_competitor_analysis(analysis_text)
         
-        # Store competitor analysis in memory
         self.memory.add_to_memory(
             text=analysis_text,
             metadata={"type": "competitor_analysis", "startup": startup_info["name"]}
@@ -51,8 +42,6 @@ class CompetitorAnalysisAgent:
         return competitor_analysis
     
     def _parse_competitor_analysis(self, analysis_text: str) -> Dict[str, Any]:
-        """Parse competitor analysis from text into structured data."""
-        # This is a simplified implementation
         sections = analysis_text.split("\n\n")
         
         competitors = []

@@ -1,13 +1,13 @@
 ﻿from typing import Dict, List, Any
 import json
-from langchain.callbacks.base import BaseCallbackHandler
+from langchain_core.callbacks.base import BaseCallbackHandler
 from custom_llm import GroqHuggingFaceLLM
 from agents.research_agent import ResearchAgent
 from agents.pitch_creation_agent import PitchCreationAgent
 from agents.competitor_analysis_agent import CompetitorAnalysisAgent
 from agents.slide_design_agent import SlideDesignAgent
 from agents.visual_generation_agent import VisualGenerationAgent
-from memory.qdrant_memory import QdrantMemoryStore
+from memory.memory import PineconeMemoryStore
 from utils.reflection_loops import ReflectionSystem
 from utils.memory_pruning import prune_memory
 from config import PitchPilotConfig
@@ -29,12 +29,12 @@ class PitchPilotOrchestrator:
         )
 
         # Initialize memory
-        self.memory = QdrantMemoryStore(
-            url=config.qdrant_url,
-            api_key=config.qdrant_api_key,
-            collection_name=config.collection_name,
+        self.memory = PineconeMemoryStore(
+            api_key=config.pinecone_api_key,
+            index_name=config.collection_name,
             vector_dimension=config.vector_dimension
         )
+
         
         # Initialize agents
         self.research_agent = ResearchAgent(self.llm, self.memory)

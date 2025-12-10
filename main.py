@@ -1,6 +1,6 @@
 ﻿import os
 from dotenv import load_dotenv
-from langchain.callbacks import StdOutCallbackHandler
+from langchain_core.callbacks import StdOutCallbackHandler
 from utils.presentation_exporter import save_as_powerpoint
 from agents.orchestrator import PitchPilotOrchestrator
 from config import PitchPilotConfig

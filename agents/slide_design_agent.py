@@ -1,13 +1,13 @@
 ﻿from typing import Dict, List, Any
-from langchain.llms.base import BaseLLM
+from langchain_core.language_models import LLM
 
-from memory.qdrant_memory import QdrantMemoryStore
+from memory.memory import PineconeMemoryStore
 from prompts.slide_design_prompts import SLIDE_DESIGN_PROMPT_TEMPLATE
 
 class SlideDesignAgent:
     """Agent responsible for designing slides."""
-    
-    def __init__(self, llm: BaseLLM, memory: QdrantMemoryStore):
+
+    def __init__(self, llm: LLM, memory: PineconeMemoryStore):
         self.llm = llm
         self.memory = memory
     
@@ -40,8 +40,7 @@ class SlideDesignAgent:
             )
             
             # Get slide design from LLM
-            design_response = self.llm.generate([prompt])
-            design_text = design_response.generations[0][0].text
+            design_text = self.llm.invoke(prompt)
             
             # Parse the design response into structured data
             slide = self._parse_slide_design(design_text, slide_template)

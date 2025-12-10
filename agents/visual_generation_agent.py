@@ -5,7 +5,7 @@ import ast
 import time
 import traceback
 from typing import List, Optional
-from langchain.llms.base import BaseLLM
+from langchain_core.language_models import LLM
 import matplotlib
 matplotlib.use('Agg')  # Non-GUI backend
 import matplotlib.pyplot as plt
@@ -16,7 +16,7 @@ class VisualGenerationAgent:
     executes it, and returns generated image file paths.
     """
 
-    def __init__(self, llm: BaseLLM, output_dir: str = "generated_visuals"):
+    def __init__(self, llm: LLM, output_dir: str = "generated_visuals"):
         self.llm = llm
         self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
@@ -39,8 +39,7 @@ class VisualGenerationAgent:
         )
 
         try:
-            code_response = self.llm.generate([prompt])
-            code_text = code_response.generations[0][0].text.strip()
+            code_text = self.llm.invoke(prompt)
 
             # Step 2: Extract code block if wrapped in markdown
             if "```" in code_text:

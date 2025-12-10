@@ -1,14 +1,14 @@
 ﻿from typing import Dict, List, Any
-from langchain.llms.base import BaseLLM
+from langchain_core.language_models import LLM
 
-from memory.qdrant_memory import QdrantMemoryStore
+from memory.memory import PineconeMemoryStore
 from prompts.pitch_creation_prompts import PITCH_CREATION_PROMPT_TEMPLATE
 from utils.context_prioritization import prioritize_context
 
 class PitchCreationAgent:
     """Agent responsible for creating the pitch content."""
-    
-    def __init__(self, llm: BaseLLM, memory: QdrantMemoryStore):
+
+    def __init__(self, llm: LLM, memory: PineconeMemoryStore):
         self.llm = llm
         self.memory = memory
     
