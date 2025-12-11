@@ -1,7 +1,7 @@
 ﻿from typing import Dict, List, Any
 import json
 from langchain_core.callbacks.base import BaseCallbackHandler
-from custom_llm import GroqHuggingFaceLLM
+from custom_llm import PerplexityLLM
 from agents.research_agent import ResearchAgent
 from agents.pitch_creation_agent import PitchCreationAgent
 from agents.competitor_analysis_agent import CompetitorAnalysisAgent
@@ -20,9 +20,8 @@ class PitchPilotOrchestrator:
         self.callbacks = callbacks or []
         
         # Initialize the LLM
-        self.llm = GroqHuggingFaceLLM(
+        self.llm = PerplexityLLM(
             model=config.model,
-            provider="groq",
             api_key=config.api_key,
             temperature=config.temperature,
             max_tokens=config.max_tokens,

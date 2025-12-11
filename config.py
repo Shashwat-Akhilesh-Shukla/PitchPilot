@@ -5,8 +5,8 @@ class PitchPilotConfig:
     
     def __init__(self):
         # LLM settings
-        self.api_key = os.getenv("HF_TOKEN")
-        self.model = "meta-llama/Llama-3.3-70B-Instruct"
+        self.api_key = os.getenv("API_KEY")
+        self.model = "sonar"
         
         # LangChain settings
         self.temperature = 0.2
@@ -14,7 +14,7 @@ class PitchPilotConfig:
         
         # Pinecone settings
         self.pinecone_api_key = os.getenv("PINECONE_API_KEY")
-        self.index_name = "pitchpilot_memory"
+        self.collection_name = "pitchpilot-memory"
         self.vector_dimension = 384
         self.pinecone_cloud = "aws"
         self.pinecone_region = "us-east-1"
