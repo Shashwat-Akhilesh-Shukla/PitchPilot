@@ -86,7 +86,14 @@ class PitchPilotOrchestrator:
         for idx, slide in enumerate(slides):
             generated_visuals = []
             for vis_desc in slide.get("visual_elements", []):
-                img_path = self.visual_generation_agent.generate_visual_from_description(vis_desc, idx)
+                # Heuristic: If it looks like a chart/graph, generate it. Otherwise, fetch from web.
+                is_chart = any(word in vis_desc.lower() for word in ["chart", "graph", "plot", "diagram", "axis", "data"])
+                
+                if is_chart:
+                    img_path = self.visual_generation_agent.generate_visual_from_description(vis_desc, idx)
+                else:
+                    img_path = self.visual_generation_agent.fetch_web_image_from_description(vis_desc, idx)
+                    
                 if img_path:
                     generated_visuals.append(img_path)
             slide["generated_visuals"] = generated_visuals

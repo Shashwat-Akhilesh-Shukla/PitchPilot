@@ -9,6 +9,7 @@ from langchain_core.language_models import LLM
 import matplotlib
 matplotlib.use('Agg')  # Non-GUI backend
 import matplotlib.pyplot as plt
+from utils.image_fetcher import fetch_web_images
 
 class VisualGenerationAgent:
     """
@@ -68,6 +69,16 @@ class VisualGenerationAgent:
             print(f"[VisualGen] Error generating visual: {e}")
             traceback.print_exc()
             return None
+
+    def fetch_web_image_from_description(self, description: str, slide_index: int) -> Optional[str]:
+        """
+        Search and download a relevant image from the web based on description.
+        """
+        print(f"[VisualGen] Searching web for: {description}")
+        images = fetch_web_images(description, max_images=1)
+        if images:
+            return images[0]
+        return None
 
     def _is_code_safe(self, code: str) -> bool:
         """
