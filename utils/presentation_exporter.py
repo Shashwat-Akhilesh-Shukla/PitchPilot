@@ -1,4 +1,4 @@
-import os, httpx, requests, random, difflib
+import os, httpx, requests, random, difflib, re
 from pptx import Presentation
 from pptx.util import Inches
 import time
@@ -8,6 +8,30 @@ PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 IMAGE_GEN_MODEL = "sonar-pro"
 
 IMPORTANT_SLIDE_TYPES = {"Problem", "Solution", "Product"}  # Slide types eligible for image generation
+
+
+def clean_text(text: str) -> str:
+    """
+    Cleans text by removing Markdown formatting and unnecessary artifacts.
+    """
+    if not text:
+        return ""
+    
+    # Remove Markdown bold (**text**) and italic (*text*)
+    text = re.sub(r'\*\*+(.*?)\*\*+', r'\1', text)
+    text = re.sub(r'\*+(.*?)\*+', r'\1', text)
+    text = re.sub(r'__+(.*?)__+', r'\1', text)
+    text = re.sub(r'_+(.*?)_+', r'\1', text)
+    
+    # Remove Markdown headers (# Header)
+    text = re.sub(r'^#+\s*', '', text, flags=re.MULTILINE)
+    
+    # Remove bullet points if they are already at the start (to avoid double bullets)
+    text = re.sub(r'^[-*+]\s+', '', text)
+    
+    # Clean up multiple spaces and strip
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
 
 
 def generate_image_via_perplexity(prompt: str) -> str:
@@ -96,7 +120,7 @@ def save_as_powerpoint(pitch_deck: dict,
 
     # 4. Title Slide
     slide = prs.slides.add_slide(prs.slide_layouts[0])
-    slide.shapes.title.text = pitch_deck.get("title", "Pitch Deck")
+    slide.shapes.title.text = clean_text(pitch_deck.get("title", "Pitch Deck"))
 
     startup_name = pitch_deck.get('startup_info', {}).get('name', 'Unknown Startup')
     if len(slide.placeholders) > 1 and slide.placeholders[1]:
@@ -105,7 +129,7 @@ def save_as_powerpoint(pitch_deck: dict,
     # 5. Content Slides
     for i, slide_data in enumerate(pitch_deck.get("slides", [])):
         slide = prs.slides.add_slide(prs.slide_layouts[1])
-        slide.shapes.title.text = slide_data.get("title", "Untitled Slide")
+        slide.shapes.title.text = clean_text(slide_data.get("title", "Untitled Slide"))
 
         # Content bullets
         if len(slide.placeholders) > 1 and slide.placeholders[1] and hasattr(slide.placeholders[1], 'text_frame'):
@@ -113,7 +137,7 @@ def save_as_powerpoint(pitch_deck: dict,
             tf.clear()
             for bullet in slide_data.get("content", []):
                 p = tf.add_paragraph()
-                p.text = bullet
+                p.text = clean_text(bullet)
                 p.level = 0
 
         # # Image generation for key slides

@@ -1,12 +1,12 @@
-﻿import os
+import os
 
 class PitchPilotConfig:
     """Configuration for the PitchPilot application."""
     
     def __init__(self):
         # LLM settings
-        self.api_key = os.getenv("API_KEY")
-        self.model = "sonar"
+        self.api_key = os.getenv("GEMINI_API_KEY")
+        self.model = "gemini-1.5-flash"
         
         # LangChain settings
         self.temperature = 0.2
