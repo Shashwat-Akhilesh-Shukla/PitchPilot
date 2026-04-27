@@ -95,16 +95,22 @@ def main():
 
     # Sidebar
     with st.sidebar:
-        st.image("https://via.placeholder.com/300x100/667eea/ffffff?text=PitchPilot", width=300)
+        # Check if logo exists
+        logo_path = os.path.join("assets", "logo.png")
+        if os.path.exists(logo_path):
+            st.image(logo_path, use_column_width=True)
+        else:
+            st.markdown("## 🚀 PitchPilot")
+            
         st.markdown("---")
         
         st.markdown("### 🎯 Features")
         st.markdown("""
-        - **AI Research** - Market analysis & trends
-        - **Competitor Analysis** - Smart competitive positioning
-        - **Visual Generation** - Charts & business graphics
-        - **Smart Design** - Professional slide layouts
-        - **Memory System** - Contextual content generation
+        - 🧠 **AI Research** - Market analysis & trends
+        - 🏢 **Competitor Analysis** - Smart competitive positioning
+        - 📊 **Visual Generation** - Charts & business graphics
+        - 🎨 **Smart Design** - Professional slide layouts
+        - 🧠 **Memory System** - Contextual content generation
         """)
         
         st.markdown("---")
