@@ -47,26 +47,34 @@ class PitchPilotOrchestrator:
             threshold=config.reflection_threshold
         )
     
-    def generate_pitch_deck(self, startup_info: Dict[str, str]) -> Dict[str, Any]:
+    def generate_pitch_deck(self, startup_info: Dict[str, str], progress_callback=None) -> Dict[str, Any]:
         """
         Generate a complete pitch deck based on startup information.
         
         Args:
             startup_info: Dictionary containing information about the startup
+            progress_callback: Optional function to call with progress updates (status_text, progress_value)
             
         Returns:
             Dictionary containing the generated pitch deck
         """
+        def update_progress(msg, val):
+            if progress_callback:
+                progress_callback(msg, val)
+
         # Step 1: Research phase
+        update_progress("🔍 Conducting market research...", 10)
         research_results = self.research_agent.research_startup(startup_info)
         
         # Step 2: Competitor analysis
+        update_progress("🏢 Analyzing competitors...", 30)
         competitor_analysis = self.competitor_analysis_agent.analyze_competitors(
             startup_info, 
             research_results
         )
         
         # Step 3: Create pitch content
+        update_progress("✍️ Creating pitch content...", 50)
         pitch_content = self.pitch_creation_agent.create_pitch_content(
             startup_info,
             research_results,
@@ -74,16 +82,20 @@ class PitchPilotOrchestrator:
         )
         
         # Apply reflection loop to improve content
+        update_progress("🧠 Applying reflection loop...", 65)
         pitch_content = self.reflection_system.improve_content(pitch_content)
         
         # Step 4: Design slides
+        update_progress("🎨 Designing slides...", 75)
         slides = self.slide_design_agent.design_slides(
             startup_info,
             pitch_content,
             self.config.default_slides
         )
 
+        total_slides = len(slides)
         for idx, slide in enumerate(slides):
+            update_progress(f"📊 Generating visuals for slide {idx+1}/{total_slides}...", 80 + int(10 * (idx / max(1, total_slides))))
             generated_visuals = []
             for vis_desc in slide.get("visual_elements", []):
                 # Heuristic: If it looks like a chart/graph, generate it. Otherwise, fetch from web.

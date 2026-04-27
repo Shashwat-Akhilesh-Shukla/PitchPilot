@@ -253,39 +253,18 @@ def generate_pitch_deck_with_progress(startup_info, template_style):
         try:
             # Initialize configuration and orchestrator
             status_text.text("🔧 Initializing AI agents...")
-            progress_bar.progress(10)
-            time.sleep(1)
+            progress_bar.progress(5)
             
             config = PitchPilotConfig()
             orchestrator = PitchPilotOrchestrator(config=config)
             
-            # Step 1: Research
-            status_text.text("🔍 Conducting market research...")
-            progress_bar.progress(25)
-            time.sleep(2)
+            # Callback function to update UI
+            def update_ui_progress(msg, val):
+                status_text.text(msg)
+                progress_bar.progress(val)
             
-            # Step 2: Competitor Analysis
-            status_text.text("🏢 Analyzing competitors...")
-            progress_bar.progress(45)
-            time.sleep(2)
-            
-            # Step 3: Content Creation
-            status_text.text("✍️ Creating pitch content...")
-            progress_bar.progress(65)
-            time.sleep(2)
-            
-            # Step 4: Slide Design
-            status_text.text("🎨 Designing slides...")
-            progress_bar.progress(80)
-            time.sleep(2)
-            
-            # Step 5: Visual Generation
-            status_text.text("📊 Generating visuals...")
-            progress_bar.progress(90)
-            time.sleep(1)
-            
-            # Generate the actual pitch deck
-            pitch_deck = orchestrator.generate_pitch_deck(startup_info)
+            # Generate the actual pitch deck with real progress tracking
+            pitch_deck = orchestrator.generate_pitch_deck(startup_info, progress_callback=update_ui_progress)
             
             # Step 6: Export
             status_text.text("💾 Exporting PowerPoint...")
