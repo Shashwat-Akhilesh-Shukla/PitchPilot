@@ -112,14 +112,17 @@ def main():
         
         # Environment check
         hf_token = os.getenv("HF_TOKEN")
-        qdrant_url = os.getenv("QDRANT_URL", "http://localhost:6333")
+        pinecone_api_key = os.getenv("PINECONE_API_KEY")
         
         if hf_token:
             st.success("✅ HuggingFace Token Configured")
         else:
             st.error("❌ HuggingFace Token Missing")
             
-        st.info(f"🔗 Qdrant URL: {qdrant_url}")
+        if pinecone_api_key:
+            st.success("✅ Pinecone API Key Configured")
+        else:
+            st.error("❌ Pinecone API Key Missing")
 
     # Main content area
     tab1, tab2, tab3, tab4 = st.tabs(["🚀 Generate Pitch", "📊 Dashboard", "⚙️ Advanced Settings", "📚 Help"])
@@ -434,8 +437,8 @@ def advanced_settings_interface():
         max_tokens = st.number_input("Max Tokens", 1000, 4000, 2048, help="Maximum response length")
         
         st.markdown("### 🧠 Memory Settings")
-        vector_dimension = st.number_input("Vector Dimension", 384, 1536, 768)
-        collection_name = st.text_input("Collection Name", "pitchpilot_memory")
+        vector_dimension = st.number_input("Vector Dimension", 384, 1536, 384)
+        collection_name = st.text_input("Index Name", "pitchpilot-memory")
     
     with col2:
         st.markdown("### 🎨 Generation Settings")
@@ -445,13 +448,13 @@ def advanced_settings_interface():
         
         st.markdown("### 🔗 API Settings")
         
-        qdrant_url = st.text_input("Qdrant URL", os.getenv("QDRANT_URL", "http://localhost:6333"))
+        pinecone_env = st.text_input("Pinecone Cloud/Region", "aws / us-east-1")
         
         # Test connections
         if st.button("🔍 Test Connections"):
-            test_connections(qdrant_url)
+            test_connections()
 
-def test_connections(qdrant_url):
+def test_connections():
     """Test API connections"""
     results = {}
     
@@ -462,14 +465,18 @@ def test_connections(qdrant_url):
     else:
         results["HuggingFace"] = "❌ Token Missing"
     
-    # Test Qdrant
-    try:
-        from qdrant_client import QdrantClient
-        client = QdrantClient(url=qdrant_url)
-        collections = client.get_collections()
-        results["Qdrant"] = f"✅ Connected ({len(collections.collections)} collections)"
-    except Exception as e:
-        results["Qdrant"] = f"❌ Error: {str(e)}"
+    # Test Pinecone
+    pinecone_key = os.getenv("PINECONE_API_KEY")
+    if not pinecone_key:
+        results["Pinecone"] = "❌ API Key Missing"
+    else:
+        try:
+            from pinecone import Pinecone
+            pc = Pinecone(api_key=pinecone_key)
+            indexes = pc.list_indexes()
+            results["Pinecone"] = f"✅ Connected ({len(indexes.names())} indexes)"
+        except Exception as e:
+            results["Pinecone"] = f"❌ Error: {str(e)}"
     
     # Display results
     for service, status in results.items():
@@ -531,9 +538,9 @@ def help_interface():
         - Add your HF_TOKEN to the .env file
         - Restart the application
         
-        **Issue: "Qdrant Connection Failed"**
-        - Ensure Qdrant is running on the specified URL
-        - Check if the port (default 6333) is accessible
+        **Issue: "Pinecone Connection Failed"**
+        - Ensure PINECONE_API_KEY is correct in your .env file
+        - Check if the specified index exists or can be created
         
         **Issue: "Generation Failed"**
         - Check your internet connection
