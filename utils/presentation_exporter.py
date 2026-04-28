@@ -82,12 +82,15 @@ def download_image(url: str, dest_folder="images", filename=None) -> str:
         return None
 
 
-def add_image_to_slide(slide, image_path, left=Inches(6), top=Inches(1.5), width=Inches(3)):
+def add_image_to_slide(slide, image_path, left=Inches(6), top=Inches(1.5), width=Inches(3), height=None):
     """
     Add image to the given slide.
     """
     try:
-        slide.shapes.add_picture(image_path, left, top, width=width)
+        if height:
+            slide.shapes.add_picture(image_path, left, top, width=width, height=height)
+        else:
+            slide.shapes.add_picture(image_path, left, top, width=width)
     except Exception as e:
         print(f"Failed to add image to slide: {e}")
 
@@ -151,8 +154,22 @@ def save_as_powerpoint(pitch_deck: dict,
         #             add_image_to_slide(slide, image_path)
         # Add generated visuals directly into slide
         if slide_data.get("generated_visuals"):
-            for img_path in slide_data["generated_visuals"]:
-                add_image_to_slide(slide, img_path)
+            visuals = slide_data["generated_visuals"]
+            num_visuals = len(visuals)
+            
+            for j, img_path in enumerate(visuals):
+                # Simple distribution logic: 
+                # 1 image: Right side
+                # 2 images: Stacked or side-by-side on right
+                if num_visuals == 1:
+                    add_image_to_slide(slide, img_path, left=Inches(6), top=Inches(1.5), width=Inches(3.5))
+                elif num_visuals == 2:
+                    # Side by side if j=0, 1
+                    left_pos = Inches(5.5) + Inches(2 * j)
+                    add_image_to_slide(slide, img_path, left=left_pos, top=Inches(2), width=Inches(2))
+                else:
+                    # Default stacking
+                    add_image_to_slide(slide, img_path, left=Inches(6), top=Inches(1.5 + j), width=Inches(2.5))
 
         # Notes with visuals (optional)
         visuals = slide_data.get("visual_elements", [])
