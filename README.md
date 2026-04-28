@@ -29,7 +29,7 @@
   Specialized agents for research, competitor analysis, pitch writing, slide design, and visual content generation.
 
 - **Semantic Memory & Contextual Recall**  
-  Qdrant vector memory enables cross-slide and historical knowledge recall, keeping outputs focused and consistent.
+  Pinecone vector memory enables cross-slide and historical knowledge recall, keeping outputs focused and consistent.
 
 - **LLM-Driven Reflection Loops**  
   Autonomously reviews and improves content through multi-step LLM feedback cycles.
@@ -71,8 +71,8 @@ Create a `.env` file in your root directory:
 
 ```
 HF_TOKEN=your_huggingface_api_token
-QDRANT_URL=http://localhost:6333
-QDRANT_API_KEY=your_qdrant_api_key
+PINECONE_API_KEY=your_pinecone_api_key
+GEMINI_API_KEY=your_gemini_api_key
 PERPLEXITY_API_KEY=your_perplexity_api_key  # optional
 ```
 
@@ -114,7 +114,7 @@ PitchPilot's workflow is managed via `main.py` and the orchestrator:
 
 - **Plug in other LLMs** by extending `custom_llm.py`.
 - **Add more slide templates** by modifying `config.py`.
-- **Improve memory** by integrating advanced vector/memory models in `qdrant_memory.py`.
+- **Improve memory** by integrating advanced vector/memory models in `memory/memory.py`.
 - **Customize slide design** or visual types via prompt templates.
 - **Integrate more agents** for other business tasks (financial modeling, narrative scoring, etc.).
 
@@ -132,7 +132,7 @@ PitchPilot's workflow is managed via `main.py` and the orchestrator:
 │   ├── slide_design_agent.py
 │   └── visual_generation_agent.py
 ├── memory/
-│   └── qdrant_memory.py
+│   └── memory.py
 ├── prompts/
 │   ├── competitor_analysis_prompts.py
 │   ├── pitch_creation_prompts.py
@@ -157,7 +157,7 @@ PitchPilot's workflow is managed via `main.py` and the orchestrator:
 A: PitchPilot works with any Hugging Face compatible LLM (default: Llama-3-70B-Instruct). The architecture allows easy extension to others.
 
 **Q: Is my data stored or logged?**  
-A: All pitch and research data is only stored in your Qdrant vector database or as local PPTX files.
+A: All pitch and research data is only stored in your Pinecone vector database or as local PPTX files.
 
 **Q: How do visuals work?**  
 A: For charts: the agent asks LLM for matplotlib code, validates it, runs it, and saves a PNG. For illustrations: LLM generates a prompt piped to image APIs or Perplexity's image models.
