@@ -36,7 +36,8 @@ class VisualGenerationAgent:
             f"Requirements:\n"
             f"- Must run headlessly (Agg backend)\n"
             f"- No file save in the code, just create the plot\n"
-            f"- Use plt.figure() and plt.show() at the end\n"
+            f"- Use 'plt.title()' and other labeling for clarity\n"
+            f"- DO NOT use 'plt.show()'\n"
         )
 
         try:
@@ -44,7 +45,21 @@ class VisualGenerationAgent:
 
             # Step 2: Extract code block if wrapped in markdown
             if "```" in code_text:
-                code_text = "\n".join(line for line in code_text.splitlines() if not line.strip().startswith("```"))
+                lines = code_text.splitlines()
+                # Find start and end of code block
+                start = -1
+                end = -1
+                for i, line in enumerate(lines):
+                    if line.strip().startswith("```python"):
+                        start = i
+                    elif line.strip().startswith("```") and start != -1:
+                        end = i
+                        break
+                
+                if start != -1 and end != -1:
+                    code_text = "\n".join(lines[start+1:end])
+                else:
+                    code_text = "\n".join(line for line in code_text.splitlines() if not line.strip().startswith("```"))
 
             # Step 3: Validate with AST to avoid unsafe operations
             if not self._is_code_safe(code_text):
@@ -52,16 +67,23 @@ class VisualGenerationAgent:
                 return None
 
             # Step 4: Execute the code in a restricted environment
-            fig = plt.figure()
+            # Reset matplotlib to ensure a clean state
+            plt.close('all')
             exec_globals = {"plt": plt}
             exec_locals = {}
             exec(code_text, exec_globals, exec_locals)
 
             # Step 5: Save image
+            # If the code didn't create a figure, or we want to capture whatever was plotted last
+            fig = plt.gcf()
+            if not fig.get_axes():
+                print(f"[VisualGen] No axes found in figure for slide {slide_index}")
+                return None
+                
             filename = f"slide_{slide_index}_{int(time.time())}.png"
             filepath = os.path.join(self.output_dir, filename)
-            plt.savefig(filepath, bbox_inches='tight')
-            plt.close(fig)
+            fig.savefig(filepath, bbox_inches='tight', dpi=150)
+            plt.close('all')
 
             return filepath
 
