@@ -119,12 +119,18 @@ def main():
         # Environment check
         hf_token = os.getenv("HF_TOKEN")
         pinecone_api_key = os.getenv("PINECONE_API_KEY")
+        gemini_api_key = os.getenv("GEMINI_API_KEY")
         
         if hf_token:
             st.success("✅ HuggingFace Token Configured")
         else:
-            st.error("❌ HuggingFace Token Missing")
+            st.info("ℹ️ HuggingFace Token (Optional)")
             
+        if gemini_api_key:
+            st.success("✅ Gemini API Key Configured")
+        else:
+            st.error("❌ Gemini API Key Missing")
+
         if pinecone_api_key:
             st.success("✅ Pinecone API Key Configured")
         else:
@@ -443,12 +449,19 @@ def test_connections():
     """Test API connections"""
     results = {}
     
-    # Test HuggingFace
+    # Test HuggingFace (Optional)
     hf_token = os.getenv("HF_TOKEN")
     if hf_token:
         results["HuggingFace"] = "✅ Connected"
     else:
-        results["HuggingFace"] = "❌ Token Missing"
+        results["HuggingFace"] = "ℹ️ Not configured (Optional)"
+    
+    # Test Gemini
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    if gemini_key:
+        results["Gemini API"] = "✅ Configured"
+    else:
+        results["Gemini API"] = "❌ Missing"
     
     # Test Pinecone
     pinecone_key = os.getenv("PINECONE_API_KEY")
